@@ -3,15 +3,14 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { DatabaseError } from 'pg';
 import { QueryFailedError, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { LoginUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -41,40 +40,53 @@ export class UsersService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    const { email, password } = loginUserDto;
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-      },
-    });
-
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new NotFoundException('User not found');
     }
+    return this.userRepository.save({ ...user, ...updateUserDto });
+  }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+  async findOne(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findByEmail(email: string, includePassword = false) {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    queryBuilder.where('user.email = :email', { email });
+
+    if (includePassword) {
+      queryBuilder.addSelect('user.password');
+    }
+
+    return queryBuilder.getOne();
   }
 
-  private handleDbErrors(error: any): never {
+  async validatePassword(email: string, password: string) {
+    try {
+      const user = await this.findByEmail(email, true);
+
+      if (user && (await bcrypt.compare(password, user.password))) {
+        return user;
+      }
+
+      return null;
+    } catch (error) {
+      this.handleDbErrors(error);
+    }
+  }
+
+  private handleDbErrors(error: any) {
     this.logger.error('Database error:', error);
 
     if (error instanceof QueryFailedError) {
-      const dbError = error.driverError;
-
+      const dbError = error.driverError as DatabaseError;
       switch (dbError.code) {
         case '23505':
           if (dbError.detail?.includes('email')) {
@@ -83,9 +95,7 @@ export class UsersService {
           throw new ConflictException('Record already exists');
 
         case '23503':
-          throw new ConflictException(
-            'Cannot delete, has related records',
-          );
+          throw new ConflictException('Cannot delete, has related records');
 
         case '23514':
           throw new ConflictException('Data does not meet constraints');
