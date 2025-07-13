@@ -17,6 +17,7 @@ import { CreateThemeDto } from './dto/create-theme.dto';
 import { ThemeQueryDto } from './dto/theme-query.dto';
 import { UpdateThemeDto } from './dto/update-theme.dto';
 import { ThemesService } from './themes.service';
+import { Theme } from './entities/theme.entity';
 
 @Controller('themes')
 @UseGuards(AuthGuard())
@@ -25,7 +26,11 @@ export class ThemesController {
 
   @Post('create')
   @ApiOperation({ summary: 'Create a new theme' })
-  @ApiResponse({ status: 201, description: 'Theme created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Theme created successfully',
+    type: Theme,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   create(@Body() createThemeDto: CreateThemeDto, @GetUser() user: User) {
     return this.themesService.create(createThemeDto, user.id);
@@ -33,14 +38,18 @@ export class ThemesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all themes with filtering and pagination' })
-  @ApiResponse({ status: 200, description: 'Themes retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Themes retrieved successfully',
+    type: [Theme],
+  })
   findAll(@Query() query: ThemeQueryDto) {
     return this.themesService.findAll(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get theme by ID' })
-  @ApiResponse({ status: 200, description: 'Theme found' })
+  @ApiResponse({ status: 200, description: 'Theme found', type: Theme })
   @ApiResponse({ status: 404, description: 'Theme not found' })
   findOne(@Param('id') id: string) {
     return this.themesService.findOne(id);
@@ -48,7 +57,11 @@ export class ThemesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update theme by ID' })
-  @ApiResponse({ status: 200, description: 'Theme updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Theme updated successfully',
+    type: Theme,
+  })
   @ApiResponse({ status: 404, description: 'Theme not found' })
   update(
     @Param('id') id: string,
@@ -60,7 +73,10 @@ export class ThemesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete theme by ID' })
-  @ApiResponse({ status: 200, description: 'Theme deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Theme deleted successfully',
+  })
   @ApiResponse({ status: 404, description: 'Theme not found' })
   remove(@Param('id') id: string) {
     return this.themesService.remove(id);
