@@ -30,7 +30,6 @@ export class UsersController {
   @Get(':id')
   @UseGuards(AuthGuard())
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    console.log('id', id);
     return this.usersService.findOne(id);
   }
 
