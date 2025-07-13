@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThemesModule } from './themes/themes.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),
+    ThemesModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
