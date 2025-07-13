@@ -8,7 +8,7 @@ A NestJS-based API for creating and managing customizable themes. Theme Factory 
 - **Theme System**: Create, read, update, and delete themes with rich configuration options
 - **Authentication**: JWT-based authentication with Passport.js
 - **Database Integration**: PostgreSQL with TypeORM
-- **API Documentation**: Swagger/OpenAPI documentation
+- **API Documentation**: Comprehensive Swagger/OpenAPI documentation with examples
 - **Validation**: Input validation with class-validator
 - **Type Safety**: Full TypeScript support
 
@@ -110,10 +110,19 @@ yarn run format
 
 ## API Documentation
 
-Once the application is running, access the Swagger documentation at:
+The API features comprehensive **Swagger/OpenAPI documentation** with detailed descriptions, examples, and response schemas for all endpoints. Once the application is running, access the interactive documentation at:
+
 ```
 http://localhost:3000/api/docs
 ```
+
+### Documentation Features
+- **Complete endpoint documentation** with operation summaries
+- **Request/response schemas** with examples
+- **Authentication requirements** clearly marked
+- **Error response documentation** for all status codes
+- **Interactive API testing** directly from the browser
+- **DTO validation rules** reflected in the documentation
 
 ## Database Schema
 
@@ -142,21 +151,27 @@ http://localhost:3000/api/docs
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/register` - User registration
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User login
 
-### Users
-- `GET /api/users` - Get all users
-- `GET /api/users/:id` - Get user by ID
-- `PUT /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Delete user
+### Users 🔒
+*All user endpoints require authentication*
+- `POST /users/register` - Create a new user
+- `GET /users` - Get all users (protected)
+- `GET /users/:id` - Get user by ID (protected)
+- `PATCH /users/:id` - Update user (protected)
 
-### Themes
-- `GET /api/themes` - Get all themes
-- `GET /api/themes/:id` - Get theme by ID
-- `POST /api/themes` - Create new theme
-- `PUT /api/themes/:id` - Update theme
-- `DELETE /api/themes/:id` - Delete theme
+### Themes 🔒
+*All theme endpoints require authentication*
+- `POST /themes/create` - Create a new theme
+- `GET /themes` - Get all themes with filtering and pagination
+- `GET /themes/:id` - Get theme by ID
+- `PATCH /themes/:id` - Update theme by ID
+- `DELETE /themes/:id` - Delete theme by ID
+
+> 🔒 = Requires JWT Bearer token authentication
+> 
+> **Note**: All endpoints are fully documented with examples, validation rules, and response schemas in the Swagger documentation at `/api/docs`
 
 ## Contributing
 
