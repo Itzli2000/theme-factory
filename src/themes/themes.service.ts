@@ -86,7 +86,7 @@ export class ThemesService {
   async findOne(id: string): Promise<Theme> {
     const theme = await this.themeRepository.findOne({
       where: { id, isActive: true },
-      // relations: ['createdBy', 'updatedBy'],
+      relations: ['createdBy', 'updatedBy'],
     });
 
     if (!theme) {
