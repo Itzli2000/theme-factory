@@ -35,6 +35,14 @@ export class Theme {
   description: string;
 
   @ApiProperty({
+    description: 'Theme google fonts',
+    example: ['Roboto', 'Inter', 'Poppins'],
+    required: false,
+  })
+  @Column({ type: 'simple-array', nullable: true })
+  googleFonts: string[];
+
+  @ApiProperty({
     description: 'Theme configuration object',
     example: { palette: { mode: 'dark', primary: { main: '#9c27b0' } } },
   })

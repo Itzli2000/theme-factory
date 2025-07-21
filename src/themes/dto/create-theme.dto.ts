@@ -119,6 +119,34 @@ class MuiPaletteDto {
   success?: MuiPaletteColorDto;
 }
 
+class MuiTypographyVariantDto {
+  @ApiProperty({ description: 'Font family for the variant', required: false })
+  @IsOptional()
+  @IsString()
+  fontFamily?: string;
+
+  @ApiProperty({ description: 'Font weight for the variant', required: false })
+  @IsOptional()
+  fontWeight?: number;
+
+  @ApiProperty({ description: 'Font size for the variant', required: false })
+  @IsOptional()
+  @IsString()
+  fontSize?: string;
+
+  @ApiProperty({ description: 'Line height for the variant', required: false })
+  @IsOptional()
+  lineHeight?: number;
+
+  @ApiProperty({
+    description: 'Letter spacing for the variant',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  letterSpacing?: string;
+}
+
 class MuiTypographyDto {
   @ApiProperty({
     description: 'Font family for the theme',
@@ -168,6 +196,136 @@ class MuiTypographyDto {
   })
   @IsOptional()
   fontWeightBold?: number;
+
+  @ApiProperty({
+    description: 'Typography variant h1',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h1?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant h2',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h2?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant h3',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h3?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant h4',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h4?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant h5',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h5?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant h6',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  h6?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant subtitle1',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  subtitle1?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant subtitle2',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  subtitle2?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant body1',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  body1?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant body2',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  body2?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant button',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  button?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant caption',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  caption?: MuiTypographyVariantDto;
+
+  @ApiProperty({
+    description: 'Typography variant overline',
+    type: () => MuiTypographyVariantDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MuiTypographyVariantDto)
+  overline?: MuiTypographyVariantDto;
 }
 
 class MuiShapeDto {
@@ -285,6 +443,18 @@ export class CreateThemeDto {
   description?: string;
 
   @ApiProperty({
+    description: 'Array of Google Font names to be used in the theme',
+    example: ['Roboto', 'Inter', 'Poppins'],
+    required: false,
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(10)
+  @MaxLength(50, { each: true })
+  googleFonts?: string[];
+
+  @ApiProperty({
     description: 'Configuration of the theme compatible with MUI ThemeOptions',
     example: {
       palette: {
@@ -315,5 +485,83 @@ export class CreateThemeDto {
   @IsString({ each: true })
   @ArrayMaxSize(10)
   @MaxLength(30, { each: true })
+  tags?: string[];
+}
+
+// MuiPaletteColor
+export interface MuiPaletteColor {
+  main: string;
+  dark?: string;
+  light?: string;
+  contrastText?: string;
+}
+
+// MuiPalette
+export interface MuiPalette {
+  mode?: 'light' | 'dark';
+  primary?: MuiPaletteColor;
+  secondary?: MuiPaletteColor;
+  error?: MuiPaletteColor;
+  warning?: MuiPaletteColor;
+  info?: MuiPaletteColor;
+  success?: MuiPaletteColor;
+}
+
+// MuiTypographyVariant
+export interface MuiTypographyVariant {
+  fontFamily?: string;
+  fontWeight?: number;
+  fontSize?: string;
+  lineHeight?: number;
+  letterSpacing?: string;
+}
+
+// MuiTypography
+export interface MuiTypography {
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeightLight?: number;
+  fontWeightRegular?: number;
+  fontWeightMedium?: number;
+  fontWeightBold?: number;
+  h1?: MuiTypographyVariant;
+  h2?: MuiTypographyVariant;
+  h3?: MuiTypographyVariant;
+  h4?: MuiTypographyVariant;
+  h5?: MuiTypographyVariant;
+  h6?: MuiTypographyVariant;
+  subtitle1?: MuiTypographyVariant;
+  subtitle2?: MuiTypographyVariant;
+  body1?: MuiTypographyVariant;
+  body2?: MuiTypographyVariant;
+  button?: MuiTypographyVariant;
+  caption?: MuiTypographyVariant;
+  overline?: MuiTypographyVariant;
+}
+
+// MuiShape
+export interface MuiShape {
+  borderRadius?: number;
+}
+
+// MuiThemeConfig
+export interface MuiThemeConfig {
+  palette?: MuiPalette;
+  typography?: MuiTypography;
+  shape?: MuiShape;
+  spacing?: number;
+  shadows?: string[];
+  transitions?: Record<string, any>;
+  zIndex?: Record<string, any>;
+  breakpoints?: Record<string, any>;
+  components?: Record<string, any>;
+}
+
+// CreateThemePayload
+export interface CreateThemePayload {
+  name: string;
+  description?: string;
+  googleFonts?: string[];
+  themeConfig: MuiThemeConfig;
   tags?: string[];
 }
